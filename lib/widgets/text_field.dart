@@ -3,17 +3,23 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomTextFieldWidget extends StatefulWidget {
-  const CustomTextFieldWidget(
-      {super.key, required this.hintText, required this.isPasswordField});
+  const CustomTextFieldWidget({
+    super.key,
+    required this.hintText,
+    required this.isPasswordField,
+    required this.controller,
+  });
+
   final String hintText;
   final bool isPasswordField;
+  final TextEditingController controller;
 
   @override
   State<CustomTextFieldWidget> createState() => _CustomTextFieldWidgetState();
 }
 
 class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
-  bool hidePassword = false;
+  bool hidePassword = true; // Default to hiding the password
 
   @override
   Widget build(BuildContext context) {
@@ -22,20 +28,19 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColorLight,
-        // color: const Color(0xFFF5F5F5),
         border: Border.all(
           color: Theme.of(context).primaryColorDark,
-          // color: const Color(0xFFD9D9D9),
           width: 1,
         ),
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextFormField(
+        controller: widget.controller,
         style: GoogleFonts.poppins(
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
         ),
-        obscureText: hidePassword,
+        obscureText: widget.isPasswordField && hidePassword,
         cursorColor: const Color(0xFF151624),
         decoration: InputDecoration(
           hintText: widget.hintText,
@@ -46,20 +51,16 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
           ),
           border: InputBorder.none,
           filled: true,
-          // fillColor: const Color(0xFFF5F5F5),
           fillColor: Theme.of(context).primaryColorLight,
           suffixIcon: widget.isPasswordField
               ? IconButton(
                   icon: Icon(
-                    hidePassword ? Icons.visibility : Icons.visibility_off,
+                    hidePassword ? Icons.visibility_off : Icons.visibility,
                   ),
                   onPressed: () {
-                    if (hidePassword) {
-                      hidePassword = false;
-                    } else {
-                      hidePassword = true;
-                    }
-                    setState(() {});
+                    setState(() {
+                      hidePassword = !hidePassword;
+                    });
                   },
                 )
               : const SizedBox(),

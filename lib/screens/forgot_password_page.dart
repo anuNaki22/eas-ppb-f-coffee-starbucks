@@ -7,8 +7,35 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/text_field.dart';
 
-class ForgotPasswordPage extends StatelessWidget {
+class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
+
+  @override
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+}
+
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  final TextEditingController emailController = TextEditingController();
+  bool isButtonEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.addListener(_checkIfButtonShouldBeEnabled);
+  }
+
+  @override
+  void dispose() {
+    emailController.removeListener(_checkIfButtonShouldBeEnabled);
+    emailController.dispose();
+    super.dispose();
+  }
+
+  void _checkIfButtonShouldBeEnabled() {
+    setState(() {
+      isButtonEnabled = emailController.text.isNotEmpty;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,22 +100,26 @@ class ForgotPasswordPage extends StatelessWidget {
                   color: const Color(0xFF7D7D7D),
                 ),
               ),
-              const CustomTextFieldWidget(
+              CustomTextFieldWidget(
                 hintText: 'alamat@gmail.com',
                 isPasswordField: false,
+                controller: emailController,
               ),
               SizedBox(
                 height: 35.h,
               ),
               ButtonWidget(
                 text: 'Reset Password',
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const LoginPage(),
-                    ),
-                  );
-                },
+                onTap: isButtonEnabled
+                    ? () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      }
+                    : null,
+                isEnabled: isButtonEnabled,
               ),
             ],
           ),

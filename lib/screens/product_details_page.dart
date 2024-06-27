@@ -15,6 +15,8 @@ class ProductDetailsPage extends StatefulWidget {
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   int quantity = 0;
   String sugarLevel = 'Normal'; // Nilai awal untuk radio button
+  final TextEditingController specialInstructionsController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -138,11 +140,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   SizedBox(
                     height: 5.h,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 100,
                     child: CustomTextFieldWidget(
-                        hintText: 'E.g No onions, please',
-                        isPasswordField: false),
+                      hintText: 'E.g No onions, please',
+                      isPasswordField: false,
+                      controller: specialInstructionsController,
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -150,7 +154,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       InkWell(
                         onTap: () {
                           setState(() {
-                            quantity--;
+                            if (quantity > 0) {
+                              quantity--;
+                            }
                           });
                         },
                         child: Container(
@@ -224,6 +230,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         ),
                       );
                     },
+                    isEnabled: quantity > 0,
                   )
                 ],
               ),
@@ -264,7 +271,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           top: 40,
           child: Container(
             decoration: BoxDecoration(
-              color: Color(0xFF1AA570).withOpacity(0.5),
+              color: const Color(0xFF1AA570).withOpacity(0.5),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Container(
@@ -285,7 +292,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             },
             child: Container(
               decoration: BoxDecoration(
-                color: Color(0xFF1AA570).withOpacity(0.5),
+                color: const Color(0xFF1AA570).withOpacity(0.5),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Container(

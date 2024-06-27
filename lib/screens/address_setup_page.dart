@@ -6,8 +6,51 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../widgets/text_field.dart';
 
-class AddressSetupPage extends StatelessWidget {
+class AddressSetupPage extends StatefulWidget {
   const AddressSetupPage({super.key});
+
+  @override
+  State<AddressSetupPage> createState() => _AddressSetupPageState();
+}
+
+class _AddressSetupPageState extends State<AddressSetupPage> {
+  final TextEditingController addressController1 = TextEditingController();
+  final TextEditingController addressController2 = TextEditingController();
+  final TextEditingController zipCodeController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
+  final TextEditingController countryController = TextEditingController();
+
+  bool isButtonEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    addressController1.addListener(_checkIfButtonShouldBeEnabled);
+    addressController2.addListener(_checkIfButtonShouldBeEnabled);
+    zipCodeController.addListener(_checkIfButtonShouldBeEnabled);
+    cityController.addListener(_checkIfButtonShouldBeEnabled);
+    countryController.addListener(_checkIfButtonShouldBeEnabled);
+  }
+
+  @override
+  void dispose() {
+    addressController1.dispose();
+    addressController2.dispose();
+    zipCodeController.dispose();
+    cityController.dispose();
+    countryController.dispose();
+    super.dispose();
+  }
+
+  void _checkIfButtonShouldBeEnabled() {
+    setState(() {
+      isButtonEnabled = addressController1.text.isNotEmpty &&
+          addressController2.text.isNotEmpty &&
+          zipCodeController.text.isNotEmpty &&
+          cityController.text.isNotEmpty &&
+          countryController.text.isNotEmpty;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +96,10 @@ class AddressSetupPage extends StatelessWidget {
                 'Alamat Lengkap 1',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const CustomTextFieldWidget(
+              CustomTextFieldWidget(
                 hintText: 'Address',
                 isPasswordField: false,
+                controller: addressController1,
               ),
               SizedBox(
                 height: 18.h,
@@ -64,9 +108,10 @@ class AddressSetupPage extends StatelessWidget {
                 'Alamat Lengkap 2',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const CustomTextFieldWidget(
+              CustomTextFieldWidget(
                 hintText: 'Address',
                 isPasswordField: false,
+                controller: addressController2,
               ),
               SizedBox(
                 height: 18.h,
@@ -83,9 +128,10 @@ class AddressSetupPage extends StatelessWidget {
                       ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width / 2.2,
-                        child: const CustomTextFieldWidget(
+                        child: CustomTextFieldWidget(
                           hintText: '61234',
                           isPasswordField: false,
+                          controller: zipCodeController,
                         ),
                       ),
                     ],
@@ -99,9 +145,10 @@ class AddressSetupPage extends StatelessWidget {
                       ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width / 2.2,
-                        child: const CustomTextFieldWidget(
+                        child: CustomTextFieldWidget(
                           hintText: 'Surabaya',
                           isPasswordField: false,
+                          controller: cityController,
                         ),
                       ),
                     ],
@@ -115,22 +162,26 @@ class AddressSetupPage extends StatelessWidget {
                 'Country',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const CustomTextFieldWidget(
+              CustomTextFieldWidget(
                 hintText: 'Indonesia',
                 isPasswordField: false,
+                controller: countryController,
               ),
               SizedBox(
                 height: 35.h,
               ),
               ButtonWidget(
                 text: 'Add Address',
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const LoginPage(),
-                    ),
-                  );
-                },
+                onTap: isButtonEnabled
+                    ? () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      }
+                    : null,
+                isEnabled: isButtonEnabled,
               ),
               SizedBox(
                 height: 12.h,

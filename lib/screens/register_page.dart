@@ -16,6 +16,10 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool _isTermsAccepted = false;
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   void _showTermsOfUseDialog() {
     showDialog(
@@ -78,6 +82,13 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  bool get _isFormValid =>
+      fullNameController.text.isNotEmpty &&
+      emailController.text.isNotEmpty &&
+      phoneNumberController.text.isNotEmpty &&
+      passwordController.text.isNotEmpty &&
+      _isTermsAccepted;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,9 +133,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 'Full Name',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const CustomTextFieldWidget(
+              CustomTextFieldWidget(
                 hintText: 'Nama Lengkap',
                 isPasswordField: false,
+                controller: fullNameController,
               ),
               SizedBox(
                 height: 18.h,
@@ -133,9 +145,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 'Email',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const CustomTextFieldWidget(
+              CustomTextFieldWidget(
                 hintText: 'alamat@mail.com',
                 isPasswordField: false,
+                controller: emailController,
               ),
               SizedBox(
                 height: 18.h,
@@ -144,9 +157,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 'Phone Number',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const CustomTextFieldWidget(
+              CustomTextFieldWidget(
                 hintText: '+62 8123 4567 890',
                 isPasswordField: false,
+                controller: phoneNumberController,
               ),
               SizedBox(
                 height: 18.h,
@@ -155,9 +169,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 'Password',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const CustomTextFieldWidget(
+              CustomTextFieldWidget(
                 hintText: '********',
                 isPasswordField: true,
+                controller: passwordController,
               ),
               SizedBox(
                 height: 18.h,
@@ -190,7 +205,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ButtonWidget(
                 text: 'Register',
                 onTap: () {
-                  if (_isTermsAccepted) {
+                  if (_isFormValid) {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const AddressSetupPage(),
@@ -198,6 +213,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     );
                   }
                 },
+                isEnabled: _isFormValid,
               ),
               SizedBox(
                 height: 12.h,

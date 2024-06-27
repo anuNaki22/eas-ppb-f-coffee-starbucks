@@ -8,8 +8,56 @@ import 'forgot_password_page.dart';
 import 'main_page.dart';
 import 'register_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isButtonEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.addListener(_checkIfButtonShouldBeEnabled);
+    passwordController.addListener(_checkIfButtonShouldBeEnabled);
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void _checkIfButtonShouldBeEnabled() {
+    setState(() {
+      isButtonEnabled =
+          emailController.text.isNotEmpty && passwordController.text.isNotEmpty;
+    });
+  }
+
+  void _login() {
+    if (emailController.text == "rahmat@gmail.com" &&
+        passwordController.text == "Password123!") {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const MainScreen(),
+        ),
+      );
+    } else {
+      // Show an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid email or password'),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +103,10 @@ class LoginPage extends StatelessWidget {
                 'Email',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const CustomTextFieldWidget(
+              CustomTextFieldWidget(
                 hintText: 'alamat@gmail.com',
                 isPasswordField: false,
+                controller: emailController,
               ),
               SizedBox(
                 height: 28.h,
@@ -66,9 +115,10 @@ class LoginPage extends StatelessWidget {
                 'Password',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const CustomTextFieldWidget(
+              CustomTextFieldWidget(
                 hintText: '********',
                 isPasswordField: true,
+                controller: passwordController,
               ),
               SizedBox(
                 height: 8.h,
@@ -94,13 +144,8 @@ class LoginPage extends StatelessWidget {
               ),
               ButtonWidget(
                 text: 'login',
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const MainScreen(),
-                    ),
-                  );
-                },
+                onTap: isButtonEnabled ? _login : null,
+                isEnabled: isButtonEnabled,
               ),
               SizedBox(
                 height: 12.h,
