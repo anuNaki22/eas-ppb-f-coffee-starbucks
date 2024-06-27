@@ -1,6 +1,6 @@
-import 'package:coffee_starbucks/screens/transaction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'main_page.dart';
 
 class TrackPage extends StatefulWidget {
   const TrackPage({super.key});
@@ -64,10 +64,11 @@ class _TrackPageState extends State<TrackPage> {
           left: 15,
           child: InkWell(
             onTap: () {
-              Navigator.of(context).push(
+              Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
-                  builder: (context) => const TransactionPage(),
+                  builder: (context) => const MainScreen(),
                 ),
+                (route) => false,
               );
             },
             child: Container(
