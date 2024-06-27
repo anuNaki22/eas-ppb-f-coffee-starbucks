@@ -18,7 +18,7 @@ class TransactionPage extends StatelessWidget {
             'assets/images/stall-1.jpeg',
             'Starbucks - Galaxy Mall',
             '2 Items',
-            '28, May 2024',
+            '28, June 2024',
           ),
           tileWidget(
             context,
