@@ -11,6 +11,73 @@ class OrderDetailsPage extends StatefulWidget {
 }
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
+  String? promoCode;
+  final double subtotal = 50000;
+  final double deliveryFee = 15000;
+  double discount = 0;
+
+  void _showPromoCodeDialog() {
+    TextEditingController promoController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enter Promo Code'),
+          content: TextField(
+            controller: promoController,
+            decoration: InputDecoration(
+              hintText: 'Enter your promo code',
+              hintStyle: TextStyle(
+                fontSize: 14.sp, // Ukuran font yang lebih kecil
+                color: Colors.grey, // Warna placeholder
+              ),
+            ),
+            style: TextStyle(
+              fontSize: 16.sp, // Ukuran font teks input
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Color(0xFF1AA570),
+                  fontSize: 14.sp, // Ukuran font yang lebih kecil
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                'Submit',
+                style: TextStyle(
+                  color: Color(0xFF1AA570),
+                  fontSize: 14.sp, // Ukuran font yang lebih kecil
+                ),
+              ),
+              onPressed: () {
+                setState(() {
+                  promoCode = promoController.text;
+                  if (promoCode != null && promoCode!.isNotEmpty) {
+                    discount = 0.5 * (subtotal + deliveryFee);
+                  } else {
+                    discount = 0;
+                  }
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  double get grandTotal => (subtotal + deliveryFee) - discount;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -178,7 +245,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         ),
                   ),
                   Text(
-                    'Rp 50K',
+                    'Rp ${subtotal.toStringAsFixed(0)}',
                     style: Theme.of(context).textTheme.displaySmall!.copyWith(
                           color: const Color(0xFF74AA7F),
                         ),
@@ -198,7 +265,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         ),
                   ),
                   Text(
-                    'Rp 15K',
+                    'Rp ${deliveryFee.toStringAsFixed(0)}',
                     style: Theme.of(context).textTheme.displaySmall!.copyWith(
                           color: const Color(0xFF74AA7F),
                         ),
@@ -206,6 +273,28 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 ],
               ),
             ),
+            if (discount > 0)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Discount',
+                      style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                            color: const Color(0xFF74AA7F),
+                          ),
+                    ),
+                    Text(
+                      '-Rp ${discount.toStringAsFixed(0)}',
+                      style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                            color: const Color(0xFF74AA7F),
+                          ),
+                    ),
+                  ],
+                ),
+              ),
             SizedBox(
               height: 10.h,
             ),
@@ -254,8 +343,31 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       ),
                     ],
                   ),
+                  GestureDetector(
+                    onTap: _showPromoCodeDialog,
+                    child: Text(
+                      promoCode ?? 'Add a Promo',
+                      style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                            color: const Color(0xFF74AA7F),
+                          ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Text(
-                    'Add a Promo',
+                    'Grand Total',
+                    style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                          color: const Color(0xFF74AA7F),
+                        ),
+                  ),
+                  Text(
+                    'Rp ${grandTotal.toStringAsFixed(0)}',
                     style: Theme.of(context).textTheme.displaySmall!.copyWith(
                           color: const Color(0xFF74AA7F),
                         ),
